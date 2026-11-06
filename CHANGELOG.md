@@ -7,8 +7,9 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [1.1.16] — Unreleased
+## [1.1.16] — 2026-11-06
 
+- Bundle the GPL-3.0 and LGPL-2.1 texts and third-party notices in the APK.
 - Add glass materials to the launcher and side sheets, with a window-scoped
   asynchronous panel backdrop and reusable focus drawables.
 - Simplify the phone remote to a direction pad and remove the touchpad.

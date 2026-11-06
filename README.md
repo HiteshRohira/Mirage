@@ -52,8 +52,8 @@ Get the signed **[1.1.16 release](https://github.com/HiteshRohira/Mirage/release
 
 | Android ABI | Standalone APK | Size |
 |---|---|---:|
-| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-armeabi-v7a-compact.apk) | 3.80 MB |
-| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-arm64-v8a-compact.apk) | 5.35 MB |
+| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-armeabi-v7a-compact.apk) | 3.82 MB |
+| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-arm64-v8a-compact.apk) | 5.37 MB |
 
 Requires Android 8/API 26 or newer. Install only the APK matching your TV's
 Android ABI; some 64-bit processors run 32-bit Android. The release includes

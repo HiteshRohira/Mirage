@@ -57,6 +57,20 @@ covered by the PolyForm Noncommercial license. Forks must use a
 distinct name and icon. This protects users from confusing third-party
 forks with the original.
 
+## Mirage and the AirPlay module
+
+Mirage is a fork of Glass Launcher. The launcher code remains under the
+PolyForm Noncommercial License 1.0.0 described above.
+
+The AirPlay module in `glasslauncher/airplay` is under the GNU General
+Public License 3.0 (see [glasslauncher/airplay/LICENSE](glasslauncher/airplay/LICENSE)).
+It is adapted from android-airplay-server and builds on UxPlay. The two
+licenses are not known to be compatible for a combined app, and permission
+to resolve this has been requested from the Glass Launcher copyright holders.
+
+The full list of bundled components is in
+[`THIRD-PARTY-NOTICES.txt`](glasslauncher/app/src/main/assets/licenses/THIRD-PARTY-NOTICES.txt).
+
 ## Third-party software
 
 The Google TV setup feature includes the following Apache License 2.0

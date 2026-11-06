@@ -1,0 +1,25 @@
+Mirage third-party notices
+
+Mirage is built on Glass Launcher. The launcher is under the PolyForm
+Noncommercial License 1.0.0. The AirPlay module is under GPL-3.0.
+Complete source for this build, including the build scripts and patches:
+https://github.com/HiteshRohira/Mirage/tree/v1.1.16
+
+GPL-3.0 (GPL-3.0.txt)
+- android-airplay-server: https://github.com/jqssun/android-airplay-server
+- UxPlay: https://github.com/FDH2/UxPlay (parts are LGPL-2.1)
+
+LGPL-2.1 (LGPL-2.1.txt)
+- libplist: https://github.com/libimobiledevice/libplist
+- FFmpeg ALAC and AAC decoders: https://github.com/FFmpeg/FFmpeg
+
+Apache-2.0 (OpenSSL-Apache-2.0.txt, Oboe-Apache-2.0.txt)
+- OpenSSL, Oboe, AndroidX, Media3 ExoPlayer, Kotlin and kotlinx.coroutines,
+  dadb, Okio, ZXing core, Material Symbols
+
+MIT
+- Feather icons (Feather-MIT.txt)
+- llhttp (llhttp-MIT.txt)
+
+SIL Open Font License 1.1
+- Outfit (Outfit-OFL.txt)
