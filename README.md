@@ -6,7 +6,7 @@
 
 **A fast, quiet home screen for Android TV with AirPlay built in.**
 
-[![Watch the 80-second Mirage film](docs/screenshots/launch-film.jpg)](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-launch-film.mp4)
+[![Watch the 80-second Mirage film](docs/screenshots/launch-film.jpg)](https://github.com/HiteshRohira/Mirage/releases/download/v1.2.0/Mirage-launch-film.mp4)
 
 Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a clock, an ambient background that takes its colour from the app you're on, and one row of favourite apps. Everything else stays out of the way until you ask for it. It has no ads, recommendations, accounts or telemetry.
 
@@ -38,12 +38,12 @@ Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a c
 
 ## Download
 
-Get the signed **[1.1.16 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.1.16)**, or see [what's new](CHANGELOG.md).
+Get the signed **[1.2.0 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.2.0)**, or see [what's new](CHANGELOG.md).
 
 | Android ABI | Standalone APK | Size |
 |---|---|---:|
-| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-armeabi-v7a-compact.apk) | 3.82 MB |
-| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-arm64-v8a-compact.apk) | 5.37 MB |
+| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.2.0/Mirage-1.2.0-armeabi-v7a-compact.apk) | 3.82 MB |
+| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.2.0/Mirage-1.2.0-arm64-v8a-compact.apk) | 5.37 MB |
 
 Requires Android 8 or newer. Each APK is the complete app, so install only the one that matches your TV. Some 64-bit processors run 32-bit Android, so check rather than guess.
 
@@ -53,7 +53,7 @@ With ADB connected to your TV, check which APK it needs, then install it:
 
 ```sh
 adb shell getprop ro.product.cpu.abilist
-adb install -r Mirage-1.1.16-armeabi-v7a-compact.apk
+adb install -r Mirage-1.2.0-armeabi-v7a-compact.apk
 ```
 
 If `arm64-v8a` is listed, use the 64-bit APK. Otherwise use the 32-bit one.

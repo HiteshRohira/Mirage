@@ -3,7 +3,7 @@ Mirage third-party notices
 Mirage is built on Glass Launcher. The launcher is under the PolyForm
 Noncommercial License 1.0.0. The AirPlay module is under GPL-3.0.
 Complete source for this build, including the build scripts and patches:
-https://github.com/HiteshRohira/Mirage/tree/v1.1.16
+https://github.com/HiteshRohira/Mirage/tree/v1.2.0
 
 GPL-3.0 (GPL-3.0.txt)
 - android-airplay-server: https://github.com/jqssun/android-airplay-server

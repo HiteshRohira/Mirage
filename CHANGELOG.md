@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0] — 2026-11-06
+
+- Mirage now stores its local debugging key under its own name. After updating, approve the debugging prompt on your TV once to keep using the phone remote.
+
 ## [1.1.16] — 2026-11-06
 
 - Glass materials across the launcher and side sheets.
