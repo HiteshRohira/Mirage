@@ -189,7 +189,8 @@ final class BluetoothPanel {
         c.animate().cancel();
         c.setTranslationX(0f);
         c.setAlpha(1f);
-        if (animate) NativeTheme.sheetIn(c);
+        if (animate) { GlassBackdrop.captureFor(activity, c); NativeTheme.sheetIn(c); }
+        else GlassBackdrop.attach(c);
     }
 
     void showPairing() {
@@ -596,7 +597,7 @@ final class BluetoothPanel {
         boolean info = r.type == ROW_INFO;
         row.setPadding(px(16), px(info ? 6 : 10), px(16), px(info ? 6 : 10));
         row.setMinimumHeight(px(info ? 40 : 60));
-        row.setBackground(NativeTheme.row(activity, false, 18));
+        NativeTheme.setRow(row,false,18);
         if (info) row.getBackground().setAlpha(0);
 
         if (r.iconRes != 0) {
@@ -666,7 +667,7 @@ final class BluetoothPanel {
                 CharSequence d = row.getContentDescription();
                 if (d != null) NativeTheme.announce(row, d);
             }
-            if (r.type != ROW_INFO) row.setBackground(NativeTheme.row(activity, sel, 18));
+            if (r.type != ROW_INFO) NativeTheme.setRow(row,sel,18);
             int text = sel ? 0xFF222029 : (r.type == ROW_INFO ? 0xB3FFFFFF : 0xFFF8F7FA);
             paintRow(row, r, sel, text);
         }

@@ -57,21 +57,27 @@ final class NativeTheme {
                 v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
         if (am != null && am.isEnabled()) v.announceForAccessibility(text);
     }
-    static GradientDrawable glass(Context c, float radius, boolean panel) {
-        GradientDrawable d = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
-                panel ? new int[]{0xE33B3C43, 0xEF181C27, 0xED28222E}
-                      : new int[]{0x26FFFFFF, 0x0CFFFFFF, 0x18FFFFFF});
-        d.setCornerRadius(px(c, radius));
-        d.setStroke(Math.max(1, px(c, .8f)), panel ? 0x45FFFFFF : 0x29FFFFFF);
-        return d;
+    static LiquidGlassDrawable glass(Context c, float radius, boolean panel) {
+        return new LiquidGlassDrawable(panel ? LiquidGlassDrawable.Style.PANEL : LiquidGlassDrawable.Style.SURFACE,
+                px(c, radius), c.getResources().getDisplayMetrics().density);
     }
-    static GradientDrawable row(Context c, boolean selected, float radius) {
-        GradientDrawable d = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
-                selected ? new int[]{0xFFF0EEF3, 0xFFE3E1E7}
-                         : new int[]{0x14FFFFFF, 0x07FFFFFF});
-        d.setCornerRadius(px(c, radius));
-        d.setStroke(Math.max(1, px(c, .7f)), selected ? 0x88FFFFFF : 0x16FFFFFF);
-        return d;
+    static LiquidGlassDrawable row(Context c, boolean selected, float radius) {
+        return new LiquidGlassDrawable(selected ? LiquidGlassDrawable.Style.SELECTED : LiquidGlassDrawable.Style.ROW,
+                px(c, radius), c.getResources().getDisplayMetrics().density);
+    }
+    /** Set a row's glass state, reusing its drawable so focus moves do not
+     *  allocate. Restores full opacity (some rows hide the idle plate). */
+    static void setRow(View v, boolean selected, float radius) {
+        android.graphics.drawable.Drawable bg = v.getBackground();
+        if (bg instanceof LiquidGlassDrawable) {
+            LiquidGlassDrawable.Style s = ((LiquidGlassDrawable) bg).style();
+            if (s == LiquidGlassDrawable.Style.ROW || s == LiquidGlassDrawable.Style.SELECTED) {
+                ((LiquidGlassDrawable) bg).setSelected(selected);
+                bg.setAlpha(255);
+                return;
+            }
+        }
+        v.setBackground(row(v.getContext(), selected, radius));
     }
     /** The shared right-edge glass sheet used by Control Center and Bluetooth. */
     static FrameLayout sheet(Context c) {

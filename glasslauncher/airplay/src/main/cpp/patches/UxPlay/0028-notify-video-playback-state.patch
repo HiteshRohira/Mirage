@@ -1,0 +1,87 @@
+diff --git a/lib/http_handlers.h b/lib/http_handlers.h
+--- a/lib/http_handlers.h
++++ b/lib/http_handlers.h
+@@ -357,6 +357,54 @@
+    the information to e.g. update  the slider it shows with progress to the player (0%-100%). 
+    It does not affect playing of the Media*/
+ 
++/* A playback-info reply alone does not announce the remote item's timeline to
++ * Safari. Publish the standard video state event with its playback params on
++ * readiness/rate changes and seeks. This runs only on the httpd thread. */
++static void notify_video_state(raop_conn_t *conn, const playback_info_t *info,
++                               const char *xml, int len) {
++    raop_t *raop = conn->raop;
++    if (raop->current_video < 0 || !raop->airplay_video[raop->current_video]) return;
++    airplay_video_t *video = raop->airplay_video[raop->current_video];
++    /* Do not interleave unsolicited events with the sender's initial FCUP
++     * transfer. Announce the item only once its timeline exists. */
++    if (!get_initial_fetch_complete(video) || !info->ready_to_play) return;
++    const char *session = get_apple_session_id(video);
++    if (!session) return;
++    int state = (!info->ready_to_play || info->playback_buffer_empty) ? 1 : info->rate > 0 ? 3 : 2;
++    double delta = info->position - raop->video_event_position;
++    bool changed = state != raop->video_event_state || delta > 3 || delta < -1;
++    raop->video_event_position = info->position;
++    if (!changed) return;
++    plist_t params = NULL;
++    plist_from_xml(xml, (uint32_t) len, &params);
++    if (!params) return;
++    const char *uuid = get_playback_uuid(video);
++    if (uuid) plist_dict_set_item(params, "uuid", plist_new_string(uuid));
++    plist_t event = plist_new_dict();
++    plist_dict_set_item(event, "category", plist_new_string("video"));
++    plist_dict_set_item(event, "sessionID", plist_new_uint(1));
++    bool item_changed = raop->video_event_state == 0;
++    if (item_changed) plist_dict_set_item(event, "type", plist_new_string("currentItemChanged"));
++    else plist_dict_set_item(event, "state", plist_new_string(state == 1 ? "loading" : state == 3 ? "playing" : "paused"));
++    plist_dict_set_item(event, "params", params);
++    char *body = NULL; uint32_t body_len = 0;
++    plist_to_xml(event, &body, &body_len);
++    plist_free(event);
++    if (!body) return;
++    http_response_t *message = http_response_create();
++    http_response_reverse_request_init(message, "POST", "/event", "HTTP/1.1");
++    http_response_add_header(message, "X-Apple-Session-ID", session);
++    http_response_add_header(message, "Content-Type", "text/x-apple-plist+xml");
++    http_response_finish(message, body, (int) body_len);
++    plist_mem_free(body);
++    if (httpd_queue_by_type(raop->httpd, CONNECTION_TYPE_PTTH, message) < 0) {
++        http_response_destroy(message);
++        return;
++    }
++    raop->video_event_state = item_changed ? -1 : state;
++    logger_log(raop->logger, LOGGER_INFO, "Video state event queued: %s", item_changed ? "currentItemChanged" : state == 1 ? "loading" : state == 3 ? "playing" : "paused");
++}
++
+ static void
+ http_handler_playback_info(raop_conn_t *conn, http_request_t *request, http_response_t *response,
+                            char **response_data, int *response_datalen)
+@@ -397,6 +445,7 @@
+     playback_info.seekableTimeRanges = (void *) &time_ranges_seekable;
+ 
+     *response_datalen =  create_playback_info_plist_xml(&playback_info, response_data);
++    notify_video_state(conn, &playback_info, *response_data, *response_datalen);
+     http_response_add_header(response, "Content-Type", "text/x-apple-plist+xml");
+ }
+ 
+@@ -772,6 +821,8 @@
+     int id = -1;
+     
+     logger_log(raop->logger, LOGGER_DEBUG, "http_handler_play");
++    raop->video_event_state = 0;
++    raop->video_event_position = 0;
+ 
+     const char* apple_session_id = http_request_get_header(request, "X-Apple-Session-ID");
+     if (!apple_session_id) {
+diff --git a/lib/raop.c b/lib/raop.c
+--- a/lib/raop.c
++++ b/lib/raop.c
+@@ -89,6 +89,8 @@
+     bool hls_support;
+     bool hls_pending;
+     void *video_play_conn;
++    int video_event_state;
++    double video_event_position;
+   
+     /* used in digest authentication */
+     char *nonce;

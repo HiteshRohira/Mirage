@@ -1,0 +1,41 @@
+diff --git a/lib/http_handlers.h b/lib/http_handlers.h
+--- a/lib/http_handlers.h
++++ b/lib/http_handlers.h
+@@ -1096,7 +1096,7 @@
+     }
+     airplay_video_t *airplay_video = (airplay_video_t *) hls_get_current_video(raop);
+     assert(airplay_video);
+-    if (!strcmp(url, "/master.m3u8")){
++    if (is_hls_master_request(url)){
+         char * master_playlist  = get_master_playlist(airplay_video);
+         if (master_playlist) {
+             *response_data = master_playlist;
+diff --git a/lib/airplay_video.h b/lib/airplay_video.h
+--- a/lib/airplay_video.h
++++ b/lib/airplay_video.h
+@@ -83,6 +83,7 @@
+ char *adjust_master_playlist (char *fcup_response_data, int fcup_response_datalen,
+                               const char *uri_prefix, char *uri_local_prefix);
+ char *adjust_yt_condensed_playlist(const char *media_playlist);
++bool is_hls_master_request(const char *url);
+ char *prepare_media_playlist(const char *media_playlist, const char *remote_url);
+ 
+ //called by the POST /play handler
+diff --git a/lib/airplay_video.c b/lib/airplay_video.c
+--- a/lib/airplay_video.c
++++ b/lib/airplay_video.c
+@@ -1002,6 +1002,14 @@
+     assert(val);
+     memcpy(val, begin, *len);
+     return val;
++}
++
++/* The synthetic localhost master endpoint accepts optional query parameters.
++ * Keep complete media request URLs for signed/query-selected playlist lookup. */
++bool is_hls_master_request(const char *url) {
++    const char master[] = "/master.m3u8";
++    size_t len = sizeof(master) - 1;
++    return url && !strncmp(url, master, len) && (url[len] == '\0' || url[len] == '?');
+ }
+ 
+ char *prepare_media_playlist(const char *media_playlist, const char *remote_url) {

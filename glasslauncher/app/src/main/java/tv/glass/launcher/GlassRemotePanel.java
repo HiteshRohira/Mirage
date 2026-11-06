@@ -167,9 +167,9 @@ final class GlassRemotePanel {
             row.addView(NativeTheme.toggle(c,checked),new LinearLayout.LayoutParams(NativeTheme.px(c,42),NativeTheme.px(c,24)));
             NativeTheme.switchSemantics(row,checked);
         }
-        row.setBackground(NativeTheme.row(c,false,18));
+        NativeTheme.setRow(row,false,18);
         row.setOnClickListener(v->action.run());
-        row.setOnFocusChangeListener((v,f)->{row.setBackground(NativeTheme.row(c,f,18));ControlCenterPanel.tint(row,f);});
+        row.setOnFocusChangeListener((v,f)->{NativeTheme.setRow(row,f,18);ControlCenterPanel.tint(row,f);});
         return row;
     }
     private static TextView text(Context c,String value,int size){TextView v=new TextView(c);v.setText(value);v.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,NativeTheme.textPx(c,size));v.setTypeface(NativeTheme.regular());v.setTextColor(0xFFF8F7FA);return v;}

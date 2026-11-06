@@ -87,3 +87,79 @@ textarea{resize:none;font-size:17px;line-height:1.4;min-height:84px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media (max-height:620px){.key{min-height:56px}.key span{display:none}.pad-hint{display:none}.volume button,.key.slim{min-height:52px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Liquid glass material layer. Changes surfaces only: no sizes, positions or markup. */
+:root{
+  --lg-fill:linear-gradient(155deg,rgba(255,255,255,.13),rgba(255,255,255,.04) 48%,rgba(255,255,255,.08));
+  --lg-blur:blur(24px) saturate(150%) brightness(1.08);
+  --lg-shadow:inset 0 1px 1px rgba(255,255,255,.32),inset 0 -1px 1px rgba(255,255,255,.06),inset 0 0 24px rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.34),0 2px 6px rgba(0,0,0,.18);
+  --lg-rim:linear-gradient(140deg,rgba(255,255,255,.75),rgba(255,255,255,.14) 28%,rgba(255,255,255,.05) 60%,rgba(255,255,255,.42));
+}
+
+/* Ambient light field behind the glass so the blur has colour to bend. */
+body{background:#05060a}
+body::before,body::after{content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none}
+body::before{
+  background:
+    radial-gradient(34% 26% at 70% 12%,#4a5bd6 0%,transparent 70%),
+    radial-gradient(30% 24% at 10% 48%,#9c3a78 0%,transparent 72%),
+    radial-gradient(34% 26% at 82% 70%,#1a7f88 0%,transparent 70%),
+    radial-gradient(24% 18% at 24% 88%,#e0884a 0%,transparent 70%);
+  filter:blur(60px);opacity:.24;
+  animation:lgDrift 38s ease-in-out infinite alternate}
+body::after{background:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(5,6,10,.55));}
+@keyframes lgDrift{to{transform:translate3d(-6%,4%,0) rotate(8deg) scale(1.06)}}
+
+/* Shared glass surfaces */
+.pad,.key,.volume,.round,.sheet,.segmented,.ghost,.step-icon,input,textarea{
+  background:var(--lg-fill);
+  -webkit-backdrop-filter:var(--lg-blur);backdrop-filter:var(--lg-blur);
+  border:1px solid transparent;box-shadow:var(--lg-shadow)}
+.pad,.key,.volume,.round,.segmented,.ghost,.step-icon,input,textarea{position:relative}
+/* Specular rim: bright top-left and bottom-right edges, like light caught in thick glass. */
+.pad::after,.key::after,.volume::after,.round::after,.sheet::after,.segmented::after,.ghost::after,.center::after{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:var(--lg-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+/* Soft top sheen inside each surface */
+.pad::before,.key::before,.volume::before,.round::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 60% at 30% -10%,rgba(255,255,255,.16),transparent 55%)}
+
+.round{border-radius:50%}
+.pad{border-radius:38px}
+
+/* OK becomes a lens: brighter rim, deeper centre, subtle refraction ring. */
+.center{position:absolute;background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.16),rgba(255,255,255,.03) 62%,rgba(255,255,255,.08));
+  border:1px solid transparent;color:#fff;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.4),inset 0 -6px 14px rgba(0,0,0,.18),0 10px 26px rgba(0,0,0,.3)}
+.center.lit{background:rgba(255,255,255,.92);color:#1b1a22}
+.edge{color:rgba(255,255,255,.5)}
+
+/* Touch: a light bloom instead of a flat grey ripple */
+.ripple{background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%)}
+
+/* Press: glass flexes slightly and catches more light */
+.key,.round,.volume button{transition:transform .22s cubic-bezier(.3,1.6,.5,1),filter .18s,background-color .18s}
+.round:active,.key:active:not(:disabled),.key.pressed{transform:scale(.94);filter:brightness(1.35);background-color:rgba(255,255,255,.08)}
+.volume button:active:not(:disabled),.volume button.pressed{background-color:rgba(255,255,255,.12)}
+.volume .mute{border-inline:1px solid rgba(255,255,255,.10)}
+.key span{color:rgba(255,255,255,.78)}
+
+/* Status dot glows like an LED behind glass */
+.connected #dot{box-shadow:0 0 0 3px rgba(127,220,162,.18),0 0 16px rgba(127,220,162,.8)}
+
+/* Sheets become frosted glass over the remote instead of a solid panel */
+.scrim{background:rgba(4,5,9,.35);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.sheet{background:linear-gradient(170deg,rgba(40,42,54,.55),rgba(22,23,30,.62));
+  -webkit-backdrop-filter:blur(34px) saturate(180%);backdrop-filter:blur(34px) saturate(180%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.28),0 -20px 50px rgba(0,0,0,.45)}
+.primary{background:rgba(255,255,255,.92);box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(0,0,0,.25)}
+.segmented button[aria-checked="true"]{background:rgba(255,255,255,.9);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+input,textarea{background:rgba(0,0,0,.22)}
+
+@media (prefers-reduced-transparency:reduce){
+  .pad,.key,.volume,.round,.sheet{-webkit-backdrop-filter:none;backdrop-filter:none;background:#22232c}
+  body::before{display:none}}
+@media (prefers-reduced-motion:reduce){body::before{animation:none}}

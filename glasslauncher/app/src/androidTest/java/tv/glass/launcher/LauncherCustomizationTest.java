@@ -511,7 +511,7 @@ public class LauncherCustomizationTest {
             View blurLayer = awaitVisibleViewField(scenario, "favoritesBlurLayer");
             scenario.onActivity(activity -> {
                 View shelf = (View) field(activity, "shelf");
-                assertTrue(shelf.getBackground() instanceof FavoritesGlassDrawable);
+                assertTrue(shelf.getBackground() instanceof LiquidGlassDrawable);
             });
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -547,22 +547,12 @@ public class LauncherCustomizationTest {
             View drawer = awaitVisibleViewField(scenario, "drawer");
             scenario.onActivity(activity -> {
                 assertEquals(View.INVISIBLE, blurLayer.getVisibility());
-                FavoritesGlassDrawable homeGlass = (FavoritesGlassDrawable)
+                LiquidGlassDrawable homeGlass = (LiquidGlassDrawable)
                         ((View) field(activity, "shelf")).getBackground();
-                FavoritesGlassDrawable gridGlass = (FavoritesGlassDrawable)
-                        field(drawer, "favoritesGlass");
-                int[] homeFill = (int[]) field(homeGlass, "fillColors");
-                int[] gridFill = (int[]) field(gridGlass, "fillColors");
-                // Feather's drawer uses a darker, stronger plate than Home.
-                // Compare the rendered lower fill, away from the rounded rim.
-                assertTrue("grid plate has stronger contrast than Home",
-                        Color.alpha(gridFill[gridFill.length - 1])
-                                > Color.alpha(homeFill[homeFill.length - 1]));
+                assertEquals(LiquidGlassDrawable.Style.SURFACE, homeGlass.style());
                 int homePixel = drawablePixel(homeGlass);
-                int gridPixel = drawablePixel(gridGlass);
                 assertTrue("Home plate draws translucent pixels", Color.alpha(homePixel) > 0);
-                assertTrue("grid plate draws stronger contrast", Color.alpha(gridPixel) > Color.alpha(homePixel));
-                assertTrue("grid plate has a dark tint", Color.red(gridPixel) < Color.red(homePixel));
+                assertTrue("Home plate stays translucent", Color.alpha(homePixel) < 255);
                 invoke(activity, "closeDrawer");
             });
 

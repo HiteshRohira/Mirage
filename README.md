@@ -6,10 +6,16 @@
 
 **A fast, quiet home screen for Android TV with AirPlay built in.**
 
+[![Watch the 80-second Mirage film](docs/screenshots/launch-film.jpg)](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-launch-film.mp4)
+
 Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a clock, an ambient background that takes its colour from the app you're on, and one row of favourite apps. Everything else stays out of the way until you ask for it. It has no ads, recommendations, accounts or telemetry.
 
 <details>
 <summary>More screenshots</summary>
+
+### All apps
+
+![All apps](docs/screenshots/all-apps.png)
 
 ### Control Center
 
@@ -19,47 +25,46 @@ Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a c
 
 ![AirPlay settings](docs/screenshots/airplay.png)
 
-### Appearance
-
-![Appearance settings](docs/screenshots/appearance.png)
-
 </details>
 
 ## Features
 
 - **Home and All apps.** One favourites row on Home, with large 16:9 app banners. Press Down for a full-screen grid of every app, labelled and scrollable. Hold OK on an app to move, hide or inspect it.
 - **Control Center.** A glass side sheet with live tiles for Wi‑Fi, Bluetooth, AirPlay, Phone remote, Inputs and Appearance, plus a shortcut to Android settings.
-- **Bluetooth.** Paired devices sit one click from Home. Connect or disconnect audio devices, or pair new ones, in the same sheet.
-- **Built-in AirPlay receiver.** iPhone, iPad and Mac can mirror the screen, play video (Photos, YouTube) and stream music to the TV. There's no separate app to install or keep alive. The receiver:
+- **Bluetooth.** Paired devices sit one click from Home. Connect or disconnect audio devices in the same sheet. On Android 12 and newer you can pair new devices there too; older versions open the system pairing screen.
+- **Built-in AirPlay receiver.** iPhone, iPad and Mac can mirror the screen and stream music to the TV, and apps such as Photos and YouTube can hand video off to it. There's no separate app to install or keep alive. The receiver:
   - runs in a separate process from Home;
   - re-advertises itself when the network changes and repairs itself if it stops being visible;
   - decodes mirroring with asynchronous hardware MediaCodec straight to the screen surface;
   - uses low-latency audio;
   - trims YouTube HLS playlists to what the TV can play before playback starts.
+
+  Video handoff depends on the sender: Safari support is still being tested, and QuickTime local-file casting isn't supported.
 - **Phone remote.** The TV serves its own remote web app on your home network:
-  - scan the QR code in Control Center to pair, then add it to your Home Screen;
-  - one-handed layout with a swipe touchpad or arrow buttons, playback, volume and keyboard text entry;
-  - nothing is hosted in the cloud.
-- **Gentle on old hardware.** Designed and tuned on a 2021 TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM). It works around that firmware's app freezer and boot-start restrictions.
+  - turn on network debugging on the TV (port 5555), scan the QR code in Control Center, approve the one-time debugging prompt, then add it to your Home Screen;
+  - one-handed layout with a direction pad, playback, volume and keyboard text entry;
+  - nothing is hosted in the cloud. Traffic stays on your home network but is unencrypted HTTP, so use it only on a network you trust.
+- **Gentle on old hardware.** Designed and tuned on a TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM), with [measured results](docs/PERFORMANCE-RESULTS.md). It works around that firmware's app freezer and boot-start restrictions. Also runs on a Xiaomi Mi Box 4 (Android 9, 32-bit ARM).
 
 ## Downloads
 
-Get the signed **[1.1.13 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.1.13)**:
+Get the signed **[1.1.16 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.1.16)**:
 
 | Android ABI | Standalone APK | Size |
 |---|---|---:|
-| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.13/Mirage-1.1.13-armeabi-v7a-compact.apk) | 3.79 MB |
-| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.13/Mirage-1.1.13-arm64-v8a-compact.apk) | 5.34 MB |
+| 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-armeabi-v7a-compact.apk) | 3.80 MB |
+| 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-arm64-v8a-compact.apk) | 5.35 MB |
 
 Requires Android 8/API 26 or newer. Install only the APK matching your TV's
 Android ABI; some 64-bit processors run 32-bit Android. The release includes
 SHA-256 checksums. Use an in-place update to keep existing settings and pairings.
 
-The 1.1.13 update preserves Safari's AirPlay reverse channel, hardens mirroring decoder
-cleanup and keeps receiver health alarms on schedule. It also includes the
-[remote Settings button](docs/SETTINGS-KEY.md) and [Wi-Fi/Inputs sheets](docs/DEVICE-SHEETS.md).
-Both ABI builds contain the same launcher changes.
-See [AirPlay recovery fixes and validation](docs/AIRPLAY-RECOVERY.md). New decoder instrumentation compiled but emulator execution was blocked; physical playback testing is pending.
+The 1.1.16 update brings glass materials to the launcher and side sheets, simplifies
+the phone remote to a direction pad, and improves AirPlay HLS handling. See the
+[changelog](CHANGELOG.md), the [remote Settings button](docs/SETTINGS-KEY.md),
+[Wi-Fi/Inputs sheets](docs/DEVICE-SHEETS.md) and
+[AirPlay recovery notes](docs/AIRPLAY-RECOVERY.md). Both ABI builds contain the same
+launcher changes.
 
 ## Building
 
@@ -169,7 +174,7 @@ see [`glasslauncher/PHONE-REMOTE.md`](glasslauncher/PHONE-REMOTE.md).
 - The AirPlay module (`glasslauncher/airplay`) is adapted from [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server) and builds on [UxPlay](https://github.com/FDH2/UxPlay). It is under the **GPL-3.0** ([glasslauncher/airplay/LICENSE](glasslauncher/airplay/LICENSE)).
 - Third-party components keep their own licenses.
 
-This project is personal and non-commercial; no APKs are published.
+Mirage is built on [Glass Launcher](https://github.com/namillis/GlassLauncherTV), and signed APKs are published for non-commercial use. It isn't affiliated with or endorsed by Apple, Google, TCL or Xiaomi. AirPlay is a trademark of Apple Inc.
 
 The application ID is `tv.mirage.launcher`. An installation using the earlier
 ID is a separate app: Android does not move its private data automatically.

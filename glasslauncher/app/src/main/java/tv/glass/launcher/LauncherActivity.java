@@ -2535,6 +2535,7 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        GlassBackdrop.clear();
         // Mark paused FIRST so a package broadcast that fires during the
         // pause transition takes the paused-skip path. The order pairs
         // with {@link #onResume}'s "set false first" so the receiver
@@ -3009,8 +3010,8 @@ public class LauncherActivity extends Activity {
         shelfLp.setMargins(favoritesMarginH, 0, favoritesMarginH, favoritesBottom);
         shelf.setLayoutParams(shelfLp);
         if (favoritesBackground) {
-            shelf.setBackground(new FavoritesGlassDrawable(
-                    NativeTheme.px(this, 29), density, false));
+            shelf.setBackground(new LiquidGlassDrawable(LiquidGlassDrawable.Style.SURFACE,
+                    NativeTheme.px(this, 29), density));
         }
         shelf.setContentDescription(getString(R.string.cd_app_shelf));
         shelf.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -3662,12 +3663,13 @@ public class LauncherActivity extends Activity {
                 android.content.res.ColorStateList.valueOf(tv.getCurrentTextColor()));
     }
 
-    /** Updates the colour of an item's existing rounded GradientDrawable
-     *  background WITHOUT replacing it (which is what setBackgroundColor
-     *  would do, losing the corner radius). Falls back to a fresh rounded
-     *  drawable if the item somehow lost its background. */
+    /** Switches a menu item between its clear idle state and the glass
+     *  selection plate, reusing the item's drawable so moves don't allocate. */
     private void setMenuItemBg(TextView tv, int color) {
-        tv.setBackground(NativeTheme.row(this,color==EdgeGlassStyle.SELECTED_PILL,16));
+        boolean selected = color == EdgeGlassStyle.SELECTED_PILL;
+        NativeTheme.setRow(tv, selected, 16);
+        // Idle items stay clear, as before; only the selection is a plate.
+        if (!selected && color == EdgeGlassStyle.ROW_IDLE_BG) tv.getBackground().setAlpha(0);
     }
 
     private View buildNetBtn(int sz) {
@@ -5993,7 +5995,6 @@ public class LauncherActivity extends Activity {
         private int gridLeft = 0;   // left edge of the centred grid block (rows 1+)
         private int scrollY  = 0;
         private int contentH = 0;
-        private final FavoritesGlassDrawable favoritesGlass;
 
         int     focusedIndex = 0;
         boolean reorderMode  = false;
@@ -6051,8 +6052,6 @@ public class LauncherActivity extends Activity {
             setClipChildren(false);
             setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
             setWillNotDraw(false);
-            favoritesGlass = new FavoritesGlassDrawable(
-                    Math.round(bannerHpx * 0.22f), density, true);
         }
 
         /** Keep the veil translucent enough that the wallpaper blur remains
@@ -8347,10 +8346,10 @@ public class LauncherActivity extends Activity {
             row.setGravity(Gravity.CENTER_VERTICAL);
             row.setPadding(dp(10), dp(7), dp(10), dp(7));
             row.setMinimumWidth(dp(250));
-            android.graphics.drawable.GradientDrawable rowBg =
-                    new android.graphics.drawable.GradientDrawable();
-            rowBg.setCornerRadius(EdgeGlassStyle.rowRadiusPx(density));
-            rowBg.setColor(EdgeGlassStyle.ROW_IDLE_BG);
+            // Idle rows stay clear (as before); the selected row is a glass plate.
+            LiquidGlassDrawable rowBg = new LiquidGlassDrawable(LiquidGlassDrawable.Style.ROW,
+                    EdgeGlassStyle.rowRadiusPx(density), density);
+            rowBg.setAlpha(0);
             row.setBackground(rowBg);
 
             TextView label = new TextView(this);
@@ -8513,7 +8512,10 @@ public class LauncherActivity extends Activity {
             // 9 dp corner radius is preserved across paints. Wrapping in
             // setBackgroundColor would clobber the drawable.
             android.graphics.drawable.Drawable bg = row.getBackground();
-            if (bg instanceof android.graphics.drawable.GradientDrawable) {
+            if (bg instanceof LiquidGlassDrawable) {
+                ((LiquidGlassDrawable) bg).setSelected(sel);
+                bg.setAlpha(sel ? 255 : 0);
+            } else if (bg instanceof android.graphics.drawable.GradientDrawable) {
                 ((android.graphics.drawable.GradientDrawable) bg)
                         .setColor(sel ? hlWhite : idleBg);
             }

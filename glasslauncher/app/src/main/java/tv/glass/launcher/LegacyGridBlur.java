@@ -23,17 +23,18 @@ final class LegacyGridBlur {
     }
 
     static void blurArgb(int[] pixels, int width, int height, int radius, int passes) {
-        if (passes <= 0) return;
+        if (passes <= 0 || pixels == null || width <= 0 || height <= 0) return;
+        // One scratch buffer shared by every pass.
+        int[] horizontal = new int[width * height];
         for (int pass = 0; pass < passes; pass++) {
-            blurSinglePass(pixels, width, height, radius);
+            blurSinglePass(pixels, horizontal, width, height, radius);
         }
     }
 
-    private static void blurSinglePass(int[] pixels, int width, int height, int radius) {
+    private static void blurSinglePass(int[] pixels, int[] horizontal, int width, int height, int radius) {
         if (pixels == null || width <= 0 || height <= 0
                 || pixels.length < width * height || radius <= 0) return;
 
-        int[] horizontal = new int[width * height];
         for (int y = 0; y < height; y++) {
             int row = y * width;
             for (int x = 0; x < width; x++) {

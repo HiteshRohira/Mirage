@@ -25,3 +25,21 @@ Ordinary service starts no longer postpone an already scheduled keep-alive alarm
 Native sanitizer suite: passed, including the reproduced Safari regression. Release JVM suite:267 tests passed. Release lint:0 errors,21 warnings. Both signed ABI APKs build with the existing application ID and signing certificate; shared dex/resources/assets match and native provenance includes patch0024.
 
 The debug app and instrumentation APK compile, including the new decoder recovery checks. Emulator execution is currently blocked by T3's stale DEVICE_IN_USE claim; its prescribed stale-release command was refused. No emulator success or physical sender playback result is claimed. The user subsequently requested publication and an in-place TV installation without waiting for emulator validation, and will test playback on the TV.
+
+
+## Safari HLS follow-up — 1.1.15
+
+Patches 0025–0029 address general receiver behavior, with no domain or stream-ID dispatch:
+media playlists resolve segment/key/init-map URLs against their original remote base even
+when cached; playback flags use plist booleans and reflect readiness; successful actions
+return a binary plist acknowledgement; timeline changes publish video events. The
+synthetic local `/master.m3u8` endpoint accepts optional query parameters. Media playlist
+requests retain their entire query for existing lookup; the master fix does not strip
+signed URLs or merge query-selected entries.
+
+Validation: complete host ASan/UBSan native suite passed, including cached VOD relative
+references, optional master queries, invalid endpoint suffixes and mismatched signed
+media queries. Both ABI release builds, 267 JVM tests and lint (0 errors, 21 warnings)
+passed with JDK 17. Both APKs verify against the existing signing certificate, and their
+shared dex/resources/assets match. This does not verify Safari sender playback, and no new
+emulator playback checks were run.

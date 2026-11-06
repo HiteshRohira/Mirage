@@ -1,0 +1,19 @@
+diff --git a/lib/http_handlers.h b/lib/http_handlers.h
+--- a/lib/http_handlers.h
++++ b/lib/http_handlers.h
+@@ -718,6 +718,15 @@
+     }
+     plist_mem_free(type);
+     plist_free(req_root_node);
++    /* The sender parses every successful /action reply as a plist. An empty
++     * 200 yields kFormatErr even when we consumed the FCUP payload. */
++    plist_t reply = plist_new_dict();
++    plist_dict_set_item(reply, "errorCode", plist_new_uint(0));
++    uint32_t reply_len = 0;
++    plist_to_bin(reply, response_data, &reply_len);
++    plist_free(reply);
++    *response_datalen = (int) reply_len;
++    http_response_add_header(response, "Content-Type", "application/x-apple-binary-plist");
+     return;
+ 
+  post_action_error:;

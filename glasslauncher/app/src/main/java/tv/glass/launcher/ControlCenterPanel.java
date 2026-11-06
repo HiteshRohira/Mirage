@@ -83,7 +83,10 @@ final class ControlCenterPanel extends FrameLayout {
                     ()->isVisible() && !sliding && card!=null && card.isLaidOut()
                             && card.getAlpha()>=.999f && Math.abs(card.getTranslationX())<.5f && findFocus()!=null);
         returnFocus=anchor;if(key!=null)focusKey=key;
-        prepareControls();setVisibility(VISIBLE);bringToFront();host.shown(true);
+        prepareControls();
+        if(animate&&getContext() instanceof android.app.Activity)GlassBackdrop.captureFor((android.app.Activity)getContext(),card);
+        else GlassBackdrop.attach(card);
+        setVisibility(VISIBLE);bringToFront();host.shown(true);
         setAlpha(1f);
         if(animate){
             NativeTheme.sheetIn(card);
@@ -153,7 +156,7 @@ final class ControlCenterPanel extends FrameLayout {
         AirPlayMonitorService.Snapshot s=host.air();
         boolean on=s.state!=AirPlayStatus.State.OFF;
         LinearLayout status=new LinearLayout(getContext());status.setOrientation(LinearLayout.VERTICAL);
-        status.setPadding(px(20),px(20),px(20),px(20));status.setBackground(NativeTheme.row(getContext(),false,20));
+        status.setPadding(px(20),px(20),px(20),px(20));NativeTheme.setRow(status,false,20);
         LinearLayout top=new LinearLayout(getContext());top.setGravity(Gravity.CENTER_VERTICAL);
         top.addView(icon(R.drawable.ic_airplay),new LinearLayout.LayoutParams(px(30),px(30)));
         LinearLayout.LayoutParams dp=new LinearLayout.LayoutParams(px(10),px(10));dp.setMarginStart(px(12));
@@ -326,6 +329,7 @@ final class ControlCenterPanel extends FrameLayout {
     private void rebuild(){
         cancelMotion();removeAllViews();groups.clear();actions.clear();tileParts.clear();detailKey=null;detail=null;
         card=NativeTheme.sheet(getContext());card.setOnClickListener(v->{});
+        if(isVisible())GlassBackdrop.attach(card);
         addView(card,NativeTheme.sheetParams(getContext()));
         controls=new LinearLayout(getContext());controls.setOrientation(LinearLayout.VERTICAL);
         // Focus grows tiles into the existing gutters, inside the sheet outline.
@@ -375,10 +379,10 @@ final class ControlCenterPanel extends FrameLayout {
         TextView sub=text(status,12,true);sub.setSingleLine(true);sub.setEllipsize(TextUtils.TruncateAt.END);
         tileParts.put(key,new View[]{titleView,sub,dotView,t});
         LinearLayout.LayoutParams sl=new LinearLayout.LayoutParams(-1,-2);sl.topMargin=px(4);t.addView(sub,sl);
-        t.setBackground(NativeTheme.row(getContext(),false,20));
+        NativeTheme.setRow(t,false,20);
         t.setOnClickListener(v->{v.requestFocus();focusKey=key;action.run();});
         t.setOnFocusChangeListener((v,f)->{
-            if(f)focusKey=key;t.setBackground(NativeTheme.row(getContext(),f,20));tint(t,f);
+            if(f)focusKey=key;NativeTheme.setRow(t,f,20);tint(t,f);
             t.animate().scaleX(f?1.03f:1f).scaleY(f?1.03f:1f).setDuration(120).start();
         });
         actions.add(t);return t;
@@ -390,9 +394,9 @@ final class ControlCenterPanel extends FrameLayout {
         ImageView chevron=icon(R.drawable.ic_feather_chevron);chevron.setRotation(180);
         row.addView(chevron,new LinearLayout.LayoutParams(px(20),px(20)));
         TextView t=text(title,22,false);LinearLayout.LayoutParams tp=new LinearLayout.LayoutParams(0,-2,1);tp.setMarginStart(px(12));row.addView(t,tp);
-        row.setBackground(NativeTheme.row(getContext(),false,16));row.getBackground().setAlpha(0);
+        NativeTheme.setRow(row,false,16);row.getBackground().setAlpha(0);
         row.setOnClickListener(v->backToControls());
-        row.setOnFocusChangeListener((v,f)->{row.setBackground(NativeTheme.row(getContext(),f,16));if(!f)row.getBackground().setAlpha(0);tint(row,f);});
+        row.setOnFocusChangeListener((v,f)->{NativeTheme.setRow(row,f,16);if(!f)row.getBackground().setAlpha(0);tint(row,f);});
         return row;
     }
     private View toggleRow(String key,String title,String subtitle,boolean on,Runnable action){
@@ -411,9 +415,9 @@ final class ControlCenterPanel extends FrameLayout {
         words.addView(text(title,16,false));
         if(subtitle!=null){TextView sub=text(subtitle,12,true);sub.setSingleLine(true);sub.setEllipsize(TextUtils.TruncateAt.END);LinearLayout.LayoutParams sl=new LinearLayout.LayoutParams(-1,-2);sl.topMargin=px(4);words.addView(sub,sl);}
         if(chevron)row.addView(icon(R.drawable.ic_feather_chevron),new LinearLayout.LayoutParams(px(16),px(16)));
-        row.setBackground(NativeTheme.row(getContext(),false,18));
+        NativeTheme.setRow(row,false,18);
         row.setOnClickListener(v->{v.requestFocus();if(track)focusKey=key;action.run();});
-        row.setOnFocusChangeListener((v,f)->{if(f&&track)focusKey=key;row.setBackground(NativeTheme.row(getContext(),f,18));tint(row,f);});
+        row.setOnFocusChangeListener((v,f)->{if(f&&track)focusKey=key;NativeTheme.setRow(row,f,18);tint(row,f);});
         if(track)actions.add(row);return row;
     }
     private ImageView icon(int id){ImageView v=new ImageView(getContext());v.setImageResource(id);v.setImageTintList(ColorStateList.valueOf(0xFFF1EDF7));v.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);return v;}

@@ -1,0 +1,26 @@
+diff --git a/lib/http_handlers.h b/lib/http_handlers.h
+--- a/lib/http_handlers.h
++++ b/lib/http_handlers.h
+@@ -320,17 +320,17 @@
+     plist_t rate_node = plist_new_real(playback_info->rate);
+     plist_dict_set_item(res_root_node, "rate", rate_node);
+ 
+-    /* should these be int or bool? */
+-    plist_t ready_to_play_node = plist_new_uint(playback_info->ready_to_play);
++    /* AirPlay playback-state flags are plist booleans. */
++    plist_t ready_to_play_node = plist_new_bool(playback_info->ready_to_play != 0);
+     plist_dict_set_item(res_root_node, "readyToPlay", ready_to_play_node);
+ 
+-    plist_t playback_buffer_empty_node = plist_new_uint(playback_info->playback_buffer_empty);
++    plist_t playback_buffer_empty_node = plist_new_bool(playback_info->playback_buffer_empty != 0);
+     plist_dict_set_item(res_root_node, "playbackBufferEmpty", playback_buffer_empty_node);
+ 
+-    plist_t playback_buffer_full_node = plist_new_uint(playback_info->playback_buffer_full);
++    plist_t playback_buffer_full_node = plist_new_bool(playback_info->playback_buffer_full != 0);
+     plist_dict_set_item(res_root_node, "playbackBufferFull", playback_buffer_full_node);
+ 
+-    plist_t playback_likely_to_keep_up_node = plist_new_uint(playback_info->playback_likely_to_keep_up);
++    plist_t playback_likely_to_keep_up_node = plist_new_bool(playback_info->playback_likely_to_keep_up != 0);
+     plist_dict_set_item(res_root_node, "playbackLikelyToKeepUp", playback_likely_to_keep_up_node);
+ 
+     plist_t loaded_time_ranges_node = plist_new_array();

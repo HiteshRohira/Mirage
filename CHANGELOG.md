@@ -7,6 +7,26 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.16] — Unreleased
+
+- Add glass materials to the launcher and side sheets, with a window-scoped
+  asynchronous panel backdrop and reusable focus drawables.
+- Simplify the phone remote to a direction pad and remove the touchpad.
+
+## [1.1.15] — Local build, 2026-10-30
+
+- Resolve AirPlay media-playlist segment, key and init-map URLs against their
+  original remote base, including cached playlists.
+- Report playback state as plist booleans, acknowledge actions with a binary
+  plist and publish video events on timeline changes.
+- Accept optional query parameters on the local HLS master endpoint.
+
+## [1.1.13] — 2026-10-29
+
+- Keep Safari's AirPlay reverse connection open after acknowledgements.
+- Harden mirroring decoder cleanup and keep receiver health alarms on schedule.
+- Add the remote Settings button overlay (1.1.11) and Wi-Fi/Inputs sheets (1.1.12).
+
 ## [1.1.10] — 2026-10-28
 
 - Limit drawer fading layers to edge bands and cache the moving drawer surface.

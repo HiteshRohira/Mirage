@@ -59,6 +59,43 @@ static void test_resolve(void) {
     expect_resolve("#EXT-X-MEDIA:URI=\"unterminated\n", base, "#EXT-X-MEDIA:URI=\"unterminated\n");
 }
 
+/* Safari returns ordinary relative CDN segments for Kick VOD. A cached VOD
+ * does not request a refresh; the remote base must still reach the rewrite. */
+static void test_media_segments(void) {
+    const char *base = "https://cdn.example/vod/hls/160p30/playlist.m3u8?sig=abc";
+    const char *playlist = "#EXTM3U\n#EXT-X-TARGETDURATION:10\n"
+        "#EXT-X-KEY:METHOD=AES-128,URI=\"/keys/key.bin?token=x\"\n"
+        "#EXT-X-MAP:URI=\"init.mp4\"\n#EXTINF:10.000,\n0.ts\n"
+        "#EXTINF:10.000,\nhttps://other.example/1.ts?sig=y\n#EXT-X-ENDLIST\n";
+    airplay_video_t *av = airplay_video_init((raop_t *) 1, 7000, "en");
+    char *uris[] = {strdup(base)};
+    create_media_data_store(av, uris, 1);
+    int count=2; float duration=20; bool endlist=true;
+    CHECK(store_media_playlist(av,strdup(playlist),&count,&duration,&endlist,0)==0,"store VOD");
+    for (int i=0;i<2;i++) {
+        bool fetch=false; const char *remote=NULL;
+        char *cached=get_media_playlist(av,&count,&duration,"/160p30/playlist.m3u8",&fetch,&remote);
+        CHECK(cached && remote && !strcmp(remote,base) && !fetch,"cached VOD exposes remote base");
+        if (cached && remote) {
+            char *out=prepare_media_playlist(cached,remote);
+            CHECK(out && strstr(out,"\nhttps://cdn.example/vod/hls/160p30/0.ts\n"),"relative segment must reach CDN");
+            CHECK(out && strstr(out,"URI=\"https://cdn.example/keys/key.bin?token=x\""),"key URI");
+            CHECK(out && strstr(out,"URI=\"https://cdn.example/vod/hls/160p30/init.mp4\""),"init map URI");
+            CHECK(out && strstr(out,"https://other.example/1.ts?sig=y"),"absolute signed segment retained");
+            free(out);
+        }
+        free(cached);
+    }
+    bool fetch=false; const char *remote=NULL;
+    char *signed_match=get_media_playlist(av,&count,&duration,"/160p30/playlist.m3u8?sig=abc",&fetch,&remote);
+    CHECK(signed_match && remote && !strcmp(remote,base),"signed media query retained");
+    free(signed_match);
+    char *wrong_query=get_media_playlist(av,&count,&duration,"/160p30/playlist.m3u8?sig=other",&fetch,&remote);
+    CHECK(!wrong_query,"different signed media query must not match");
+    free(wrong_query);
+    airplay_video_destroy(av);
+}
+
 static int count_lines_with(const char *s, const char *needle) {
     int n = 0;
     for (const char *p = strstr(s, needle); p; p = strstr(p + 1, needle)) n++;
@@ -168,8 +205,14 @@ static void fuzz(void) {
 }
 
 int main(void) {
+    CHECK(is_hls_master_request("/master.m3u8"), "master endpoint");
+    CHECK(is_hls_master_request("/master.m3u8?session=abc&token=xyz"), "master query accepted");
+    CHECK(!is_hls_master_request("/master.m3u8.extra"), "master suffix rejected");
+    CHECK(!is_hls_master_request("/video/master.m3u8?session=abc"), "nested media not master");
+    CHECK(!is_hls_master_request(NULL), "null request rejected");
     test_adjust();
     test_resolve();
+    test_media_segments();
     test_prune();
     test_language();
     fuzz();

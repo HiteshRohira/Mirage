@@ -4,7 +4,7 @@ const standalone=navigator.standalone===true||matchMedia('(display-mode: standal
 let authenticated=false,connected=false,busy=false,pollTimer,lastStatus=null,polled=false,lastReconnect=0;
 let performanceDiagnostics=null,performanceLoading=false;
 const store={get:(k,d)=>{try{return localStorage.getItem(k)??d;}catch{return d;}},set:(k,v)=>{try{localStorage.setItem(k,v);}catch{}}};
-let navMode=store.get('glass.nav','pad'),haptics=store.get('glass.haptics','on')==='on';
+let haptics=store.get('glass.haptics','on')==='on';
 const feedback=text=>{$('feedback').textContent=text;};
 
 // ── Haptics: Safari (iOS 18+) ticks when a switch control toggles; Android uses vibrate.
@@ -94,12 +94,8 @@ $('tvText').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.sh
 
 // Settings toggles
 function paintSettings(){
-  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.mode===navMode)));
   document.querySelectorAll('[data-haptics]').forEach(b=>b.setAttribute('aria-checked',String((b.dataset.haptics==='on')===haptics)));
-  $('pad').classList.toggle('dpad',navMode==='dpad');
-  $('padHint').textContent=navMode==='dpad'?'Tap the arrows · centre to select · hold it for options':'Swipe to move · tap to select · hold for options';
 }
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{navMode=b.dataset.mode;store.set('glass.nav',navMode);paintSettings();haptic();}));
 document.querySelectorAll('[data-haptics]').forEach(b=>b.addEventListener('click',()=>{haptics=b.dataset.haptics==='on';store.set('glass.haptics',haptics?'on':'off');paintSettings();haptic();}));
 
 // ── Keys: one in-flight queue so presses arrive in order; drop floods.
@@ -126,12 +122,10 @@ for(const button of document.querySelectorAll('button[data-key]:not(.sr-only)'))
 // Screen-reader buttons inside the pad
 document.querySelectorAll('.pad .sr-only[data-key]').forEach(b=>b.addEventListener('click',()=>sendKey(b.dataset.key)));
 
-// ── Touchpad ──
-// Touchpad mode: swipe moves one step per STEP px travelled; holding after a
-// swipe keeps repeating that way; a tap anywhere selects.
-// Buttons mode: tap the outer ring for a direction, the centre for OK; hold repeats.
+// ── D-pad ──
+// Tap the outer ring for a direction, the centre for OK; hold repeats.
+// Holding the centre is a long press (options menus).
 const pad=$('pad'),center=$('padCenter'),ripple=$('ripple');
-const STEP=46,TAP_SLOP=12;
 let touch=null;
 function lit(dir){pad.querySelectorAll('.edge').forEach(e=>e.classList.toggle('lit',e.classList.contains(dir)));center.classList.toggle('lit',dir==='ok');}
 function unlit(){setTimeout(()=>lit(''),120);}
@@ -144,34 +138,15 @@ function zoneAt(x,y){
 function step(dir){lit(dir);sendKey(dir);unlit();}
 pad.addEventListener('pointerdown',e=>{
   if(!connected)return;e.preventDefault();pad.setPointerCapture?.(e.pointerId);
-  touch={x:e.clientX,y:e.clientY,ax:e.clientX,ay:e.clientY,moved:false,dir:null,t:performance.now()};
-  if(navMode==='dpad'){const z=zoneAt(e.clientX,e.clientY);showRipple(e.clientX,e.clientY);touch.dir=z;
-    if(z!=='ok'){step(z);holdTimer=setTimeout(()=>{repeatTimer=setInterval(()=>step(z),140);},420);}
-    // Centre: a tap selects on release; holding it is a long press (options menus).
-    else{lit('ok');holdTimer=setTimeout(()=>{touch.long=true;sendKey('ok',true);feedback('Long press');unlit();},LONG_PRESS_MS);}
-  }else{
-    // Touchpad: resting a finger without moving is a long press.
-    holdTimer=setTimeout(()=>{if(touch&&!touch.moved){touch.long=true;showRipple(touch.x,touch.y);lit('ok');sendKey('ok',true);feedback('Long press');unlit();}},LONG_PRESS_MS);
-  }
-});
-pad.addEventListener('pointermove',e=>{
-  if(!touch||navMode==='dpad')return;
-  const dx=e.clientX-touch.ax,dy=e.clientY-touch.ay;
-  if(Math.hypot(e.clientX-touch.x,e.clientY-touch.y)>TAP_SLOP)touch.moved=true;
-  if(Math.max(Math.abs(dx),Math.abs(dy))<STEP)return;
-  const dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
-  if(touch.long)return;
-  step(dir);touch.dir=dir;touch.ax=e.clientX;touch.ay=e.clientY;
-  // Keep moving while the finger rests after a swipe.
-  clearTimeout(holdTimer);clearInterval(repeatTimer);
-  holdTimer=setTimeout(()=>{repeatTimer=setInterval(()=>step(touch?.dir||dir),150);},480);
+  const z=zoneAt(e.clientX,e.clientY);showRipple(e.clientX,e.clientY);
+  touch={dir:z,long:false};
+  if(z!=='ok'){step(z);holdTimer=setTimeout(()=>{repeatTimer=setInterval(()=>step(z),140);},420);}
+  // Centre: a tap selects on release; holding it is a long press.
+  else{lit('ok');holdTimer=setTimeout(()=>{if(touch)touch.long=true;sendKey('ok',true);feedback('Long press');unlit();},LONG_PRESS_MS);}
 });
 function endTouch(e){
   if(!touch)return;clearTimeout(holdTimer);clearInterval(repeatTimer);
-  if(!touch.long){
-    if(navMode==='pad'&&!touch.moved&&performance.now()-touch.t<LONG_PRESS_MS){showRipple(e.clientX,e.clientY);step('ok');}
-    else if(navMode==='dpad'&&touch.dir==='ok'){step('ok');}
-  }
+  if(!touch.long&&touch.dir==='ok')step('ok');
   touch=null;
 }
 pad.addEventListener('pointerup',endTouch);

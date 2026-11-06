@@ -45,7 +45,7 @@ final class EdgeGlassStyle {
     private static final float[] FILL_STOPS = {0f, 0.42f, 1f};
 
     // ── Rim sheen (bright upper edge fading to a quiet lower edge) ────────
-    // Derived from FavoritesGlassDrawable's HOME_EDGE / HOME_INNER_EDGE, so
+    // Derived from the original shelf glass edge (HOME_EDGE / HOME_INNER_EDGE), so
     // the menus share the favorites row's glass vocabulary without adding a
     // second RenderEffect or blur layer.
     private static final int[] OUTER_RIM = {0x8AFFFFFF, 0x22FFFFFF};

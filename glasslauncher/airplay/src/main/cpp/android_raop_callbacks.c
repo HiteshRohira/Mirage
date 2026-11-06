@@ -469,9 +469,10 @@ static void _video_acquire_playback_info(void *cls, playback_info_t *info) {
     info->duration = ctx->playback_duration;
     info->rate = ctx->playback_rate;
     info->ready_to_play = ctx->playback_ready;
-    info->playback_buffer_empty = false;
-    info->playback_buffer_full = true;
-    info->playback_likely_to_keep_up = true;
+    info->playback_buffer_empty = !ctx->playback_ready ||
+        (!ctx->playback_paused && ctx->playback_rate <= 0);
+    info->playback_buffer_full = false;
+    info->playback_likely_to_keep_up = ctx->playback_ready && !info->playback_buffer_empty;
     info->seek_start = 0.0;
     info->seek_duration = ctx->playback_duration > 0.0 ? ctx->playback_duration : 0.0;
     pthread_mutex_unlock(&ctx->playback_info_lock);

@@ -8,13 +8,13 @@
 </header>
 
 <section class="pad-wrap" aria-label="Navigation">
-  <div id="pad" class="pad" role="group" aria-label="Touchpad. Swipe to move, tap to select." tabindex="-1">
+  <div id="pad" class="pad dpad" role="group" aria-label="Direction pad. Tap an arrow to move, the centre to select." tabindex="-1">
     <span class="edge up"><svg><use href="#chevron"/></svg></span><span class="edge right"><svg><use href="#chevron"/></svg></span><span class="edge down"><svg><use href="#chevron"/></svg></span><span class="edge left"><svg><use href="#chevron"/></svg></span>
     <span class="center" id="padCenter">OK</span>
     <span class="ripple" id="ripple"></span>
     <button class="sr-only" data-key="up">Up</button><button class="sr-only" data-key="down">Down</button><button class="sr-only" data-key="left">Left</button><button class="sr-only" data-key="right">Right</button><button class="sr-only" data-key="ok">OK</button>
   </div>
-  <p class="pad-hint" id="padHint">Swipe to move · tap to select · hold for options</p>
+  <p class="pad-hint" id="padHint">Tap the arrows · centre to select · hold it for options</p>
 </section>
 
 <section class="dock" id="dock" aria-label="Controls">
@@ -41,8 +41,6 @@
 <section id="pairPanel" class="sheet" role="dialog" aria-modal="true" hidden aria-labelledby="pairTitle"><div class="grab"></div><h2 id="pairTitle">Pair with your TV</h2><p>On the TV open Control Center → Phone remote, then enter the six-digit code.</p><form id="pairForm"><label class="sr-only" for="pin">Pairing code</label><input id="pin" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required placeholder="000000"><button class="primary">Pair</button></form></section>
 <section id="nativePanel" class="sheet" role="dialog" aria-modal="true" hidden aria-labelledby="nativeTitle"><div class="grab"></div><h2 id="nativeTitle">Enable TV controls</h2><p id="nativeHint">Approve Android’s debugging prompt on the TV once (choose Always allow). Everything stays on your Wi‑Fi.</p><button id="startNative" class="primary wide">Enable TV controls</button><button id="reconnect" class="ghost wide" hidden>Reconnect</button></section>
 <section id="settingsPanel" class="sheet" role="dialog" aria-modal="true" hidden aria-labelledby="settingsTitle"><div class="grab"></div><h2 id="settingsTitle">Remote</h2>
-  <p class="label">Navigation</p>
-  <div class="segmented" role="radiogroup" aria-label="Navigation style"><button role="radio" data-mode="pad">Touchpad</button><button role="radio" data-mode="dpad">Buttons</button></div>
   <p class="label">Feel</p>
   <div class="segmented" role="radiogroup" aria-label="Haptics"><button role="radio" data-haptics="on">Haptics on</button><button role="radio" data-haptics="off">Off</button></div>
   <button id="openInstall" class="ghost wide" hidden>Add to Home Screen</button>
