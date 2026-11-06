@@ -1,9 +1,5 @@
 # Mirage
 
-<p align="center">
-  <img src="docs/screenshots/home.png" alt="Mirage home screen" width="80%"/>
-</p>
-
 **A fast, quiet home screen for Android TV with AirPlay built in.**
 
 [![Watch the 80-second Mirage film](docs/screenshots/launch-film.jpg)](https://github.com/HiteshRohira/Mirage/releases/download/v1.2.0/Mirage-launch-film.mp4)
