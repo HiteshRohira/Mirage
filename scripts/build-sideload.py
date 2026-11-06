@@ -11,7 +11,7 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
-PROJECT = ROOT / "glasslauncher"
+PROJECT = ROOT / "mirage"
 NATIVE_LIBRARIES = {"libairplay_native.so", "libcrypto.so", "liboboe.so", "libc++_shared.so"}
 
 

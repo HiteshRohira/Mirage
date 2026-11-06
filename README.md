@@ -33,8 +33,8 @@ Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a c
 - **Control Center.** A glass side sheet with live tiles for Wi‑Fi, Bluetooth, AirPlay, Phone remote, Inputs and Appearance, plus a shortcut to Android settings.
 - **Bluetooth.** Paired devices sit one click from Home, and you can connect or disconnect audio devices in the same sheet. On Android 12 and newer you can pair new devices there too.
 - **Built-in AirPlay.** iPhone, iPad and Mac can mirror the screen and stream music to the TV, and apps such as Photos and YouTube can hand video off to it. There's no separate app to install or keep alive. Video handoff depends on the sender: Safari support is still being tested, and QuickTime local-file casting isn't supported.
-- **Phone remote.** The TV serves its own remote web app on your home network, with a direction pad, playback, volume and keyboard text entry. Nothing is hosted in the cloud. See [setup](glasslauncher/PHONE-REMOTE.md).
-- **Gentle on old hardware.** Designed and tuned on a TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM), with [measured results](docs/PERFORMANCE-RESULTS.md). Also runs on a Xiaomi Mi Box 4 (Android 9, 32-bit ARM).
+- **Phone remote.** The TV serves its own remote web app on your home network, with a direction pad, playback, volume and keyboard text entry. Nothing is hosted in the cloud. See [setup](docs/PHONE-REMOTE.md).
+- **Gentle on old hardware.** Designed and tuned on a TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM). Also runs on a Xiaomi Mi Box 4 (Android 9, 32-bit ARM).
 
 ## Download
 
@@ -64,7 +64,7 @@ Open Mirage from the TV's app list and follow its setup, or choose it in Android
 
 ```sh
 git clone --recursive https://github.com/HiteshRohira/Mirage.git
-cd Mirage/glasslauncher
+cd Mirage/mirage
 gradle --no-daemon :app:assembleRelease
 ```
 
@@ -73,7 +73,7 @@ You'll need JDK 17, Android SDK 36, NDK `27.0.12077973`, CMake `3.31.6` and Grad
 ## Licensing
 
 - Launcher code is under the **PolyForm Noncommercial License 1.0.0** ([LICENSE](./LICENSE), [NOTICE.md](./NOTICE.md)). Personal and other non-commercial use, modification and sharing are allowed; commercial use is not.
-- The AirPlay module (`glasslauncher/airplay`) is adapted from [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server) and builds on [UxPlay](https://github.com/FDH2/UxPlay). It is under the **GPL-3.0** ([glasslauncher/airplay/LICENSE](glasslauncher/airplay/LICENSE)).
+- The AirPlay module (`mirage/airplay`) is adapted from [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server) and builds on [UxPlay](https://github.com/FDH2/UxPlay). It is under the **GPL-3.0** ([mirage/airplay/LICENSE](mirage/airplay/LICENSE)).
 - Third-party components keep their own licenses.
 
 Mirage is built on [Glass Launcher](https://github.com/namillis/GlassLauncherTV). It isn't affiliated with or endorsed by Apple, Google, TCL or Xiaomi. AirPlay is a trademark of Apple Inc.

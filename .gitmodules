@@ -1,19 +1,19 @@
-[submodule "glasslauncher/airplay/src/main/cpp/third_party/UxPlay"]
-	path = glasslauncher/airplay/src/main/cpp/third_party/UxPlay
+[submodule "mirage/airplay/src/main/cpp/third_party/UxPlay"]
+	path = mirage/airplay/src/main/cpp/third_party/UxPlay
 	url = https://github.com/FDH2/UxPlay.git
 	shallow = true
-[submodule "glasslauncher/airplay/src/main/cpp/third_party/libplist"]
-	path = glasslauncher/airplay/src/main/cpp/third_party/libplist
+[submodule "mirage/airplay/src/main/cpp/third_party/libplist"]
+	path = mirage/airplay/src/main/cpp/third_party/libplist
 	url = https://github.com/libimobiledevice/libplist.git
 	shallow = true
-[submodule "glasslauncher/airplay/src/main/cpp/third_party/openssl-cmake"]
-	path = glasslauncher/airplay/src/main/cpp/third_party/openssl-cmake
+[submodule "mirage/airplay/src/main/cpp/third_party/openssl-cmake"]
+	path = mirage/airplay/src/main/cpp/third_party/openssl-cmake
 	url = https://github.com/viaduck/openssl-cmake.git
 	shallow = true
-[submodule "glasslauncher/airplay/src/main/cpp/third_party/ffmpeg"]
-	path = glasslauncher/airplay/src/main/cpp/third_party/ffmpeg
+[submodule "mirage/airplay/src/main/cpp/third_party/ffmpeg"]
+	path = mirage/airplay/src/main/cpp/third_party/ffmpeg
 	url = https://github.com/FFmpeg/FFmpeg.git
 	shallow = true
-[submodule "glasslauncher/airplay/src/main/cpp/third_party/oboe"]
-	path = glasslauncher/airplay/src/main/cpp/third_party/oboe
+[submodule "mirage/airplay/src/main/cpp/third_party/oboe"]
+	path = mirage/airplay/src/main/cpp/third_party/oboe
 	url = https://github.com/google/oboe.git

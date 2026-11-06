@@ -30,7 +30,7 @@ import xml.etree.ElementTree as ET
 
 from PIL import Image
 
-RES = os.path.join("glasslauncher", "app", "src", "main", "res")
+RES = os.path.join("mirage", "app", "src", "main", "res")
 
 DENSITIES = [("mdpi", 48), ("hdpi", 72), ("xhdpi", 96), ("xxhdpi", 144), ("xxxhdpi", 192)]
 

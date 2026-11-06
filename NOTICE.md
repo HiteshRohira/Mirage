@@ -62,14 +62,14 @@ forks with the original.
 Mirage is a fork of Glass Launcher. The launcher code remains under the
 PolyForm Noncommercial License 1.0.0 described above.
 
-The AirPlay module in `glasslauncher/airplay` is under the GNU General
-Public License 3.0 (see [glasslauncher/airplay/LICENSE](glasslauncher/airplay/LICENSE)).
+The AirPlay module in `mirage/airplay` is under the GNU General
+Public License 3.0 (see [mirage/airplay/LICENSE](mirage/airplay/LICENSE)).
 It is adapted from android-airplay-server and builds on UxPlay. The two
 licenses are not known to be compatible for a combined app, and permission
 to resolve this has been requested from the Glass Launcher copyright holders.
 
 The full list of bundled components is in
-[`THIRD-PARTY-NOTICES.txt`](glasslauncher/app/src/main/assets/licenses/THIRD-PARTY-NOTICES.txt).
+[`THIRD-PARTY-NOTICES.txt`](mirage/app/src/main/assets/licenses/THIRD-PARTY-NOTICES.txt).
 
 ## Third-party software
 

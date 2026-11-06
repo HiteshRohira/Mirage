@@ -13,7 +13,7 @@ Oboe as pinned git submodules:
 
 ```sh
 git clone --recursive https://github.com/HiteshRohira/Mirage.git
-cd Mirage/glasslauncher
+cd Mirage/mirage
 gradle --no-daemon :app:assembleRelease :app:testReleaseUnitTest :app:lintRelease
 ```
 
@@ -22,7 +22,7 @@ For an existing clone, initialize dependencies with
 FFmpeg and Oboe for the selected ABIs. The size-focused build produces standalone APKs
 for both ARM ABIs by default; `-PtargetAbis=armeabi-v7a` or
 `-PtargetAbis=arm64-v8a` builds only that ABI. Its release APKs are under
-`glasslauncher/.build/compact/app/outputs/apk/release/` with the default
+`mirage/.build/compact/app/outputs/apk/release/` with the default
 native profile. Use fresh native build state when comparing variants.
 
 ## Signing
@@ -60,13 +60,12 @@ Obtain the lowercase SHA-256 certificate digest from your keystore using
 colons). For an update, `--baseline-apk /path/to/installed-signed.apk` can replace
 `--certificate-sha256`. The helper verifies the expected package, version,
 complete native payload, certificate and alignment, and refuses a nonempty output
-directory. It builds both ABIs even if you will install only one. The legacy
-local key-directory defaults are optional; other users supply their own key.
+directory. It builds both ABIs even if you will install only one.
 
 ## Project layout
 
-- `glasslauncher/app` — the launcher: Home, All apps, Control Center, Bluetooth, the phone remote server and its web app.
-- `glasslauncher/airplay` — the AirPlay engine and player:
+- `mirage/app` — the launcher: Home, All apps, Control Center, Bluetooth, the phone remote server and its web app.
+- `mirage/airplay` — the AirPlay engine and player:
   - native UxPlay core, with patches in `src/main/cpp/patches`;
   - Kotlin service and renderers;
   - the full-screen AirPlay player.
