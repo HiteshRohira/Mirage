@@ -29,144 +29,46 @@ Mirage replaces the stock Google TV home with a calm, glass-styled launcher: a c
 
 ## Features
 
-- **Home and All apps.** One favourites row on Home, with large 16:9 app banners. Press Down for a full-screen grid of every app, labelled and scrollable. Hold OK on an app to move, hide or inspect it.
+- **Home and All apps.** One favourites row on Home, with large 16:9 app banners. Press Down for a full-screen grid of every app. Hold OK on an app to move, hide or inspect it.
 - **Control Center.** A glass side sheet with live tiles for Wi‑Fi, Bluetooth, AirPlay, Phone remote, Inputs and Appearance, plus a shortcut to Android settings.
-- **Bluetooth.** Paired devices sit one click from Home. Connect or disconnect audio devices in the same sheet. On Android 12 and newer you can pair new devices there too; older versions open the system pairing screen.
-- **Built-in AirPlay receiver.** iPhone, iPad and Mac can mirror the screen and stream music to the TV, and apps such as Photos and YouTube can hand video off to it. There's no separate app to install or keep alive. The receiver:
-  - runs in a separate process from Home;
-  - re-advertises itself when the network changes and repairs itself if it stops being visible;
-  - decodes mirroring with asynchronous hardware MediaCodec straight to the screen surface;
-  - uses low-latency audio;
-  - trims YouTube HLS playlists to what the TV can play before playback starts.
+- **Bluetooth.** Paired devices sit one click from Home, and you can connect or disconnect audio devices in the same sheet. On Android 12 and newer you can pair new devices there too.
+- **Built-in AirPlay.** iPhone, iPad and Mac can mirror the screen and stream music to the TV, and apps such as Photos and YouTube can hand video off to it. There's no separate app to install or keep alive. Video handoff depends on the sender: Safari support is still being tested, and QuickTime local-file casting isn't supported.
+- **Phone remote.** The TV serves its own remote web app on your home network, with a direction pad, playback, volume and keyboard text entry. Nothing is hosted in the cloud. See [setup](glasslauncher/PHONE-REMOTE.md).
+- **Gentle on old hardware.** Designed and tuned on a TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM), with [measured results](docs/PERFORMANCE-RESULTS.md). Also runs on a Xiaomi Mi Box 4 (Android 9, 32-bit ARM).
 
-  Video handoff depends on the sender: Safari support is still being tested, and QuickTime local-file casting isn't supported.
-- **Phone remote.** The TV serves its own remote web app on your home network:
-  - turn on network debugging on the TV (port 5555), scan the QR code in Control Center, approve the one-time debugging prompt, then add it to your Home Screen;
-  - one-handed layout with a direction pad, playback, volume and keyboard text entry;
-  - nothing is hosted in the cloud. Traffic stays on your home network but is unencrypted HTTP, so use it only on a network you trust.
-- **Gentle on old hardware.** Designed and tuned on a TCL Google TV (Android 11, 32-bit ARM, ~1.4 GB RAM), with [measured results](docs/PERFORMANCE-RESULTS.md). It works around that firmware's app freezer and boot-start restrictions. Also runs on a Xiaomi Mi Box 4 (Android 9, 32-bit ARM).
+## Download
 
-## Downloads
-
-Get the signed **[1.1.16 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.1.16)**:
+Get the signed **[1.1.16 release](https://github.com/HiteshRohira/Mirage/releases/tag/v1.1.16)**, or see [what's new](CHANGELOG.md).
 
 | Android ABI | Standalone APK | Size |
 |---|---|---:|
 | 32-bit ARM (`armeabi-v7a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-armeabi-v7a-compact.apk) | 3.82 MB |
 | 64-bit ARM (`arm64-v8a`) | [Download](https://github.com/HiteshRohira/Mirage/releases/download/v1.1.16/Mirage-1.1.16-arm64-v8a-compact.apk) | 5.37 MB |
 
-Requires Android 8/API 26 or newer. Install only the APK matching your TV's
-Android ABI; some 64-bit processors run 32-bit Android. The release includes
-SHA-256 checksums. Use an in-place update to keep existing settings and pairings.
+Requires Android 8 or newer. Each APK is the complete app, so install only the one that matches your TV. Some 64-bit processors run 32-bit Android, so check rather than guess.
 
-The 1.1.16 update brings glass materials to the launcher and side sheets, simplifies
-the phone remote to a direction pad, and improves AirPlay HLS handling. See the
-[changelog](CHANGELOG.md), the [remote Settings button](docs/SETTINGS-KEY.md),
-[Wi-Fi/Inputs sheets](docs/DEVICE-SHEETS.md) and
-[AirPlay recovery notes](docs/AIRPLAY-RECOVERY.md). Both ABI builds contain the same
-launcher changes.
+## Install
 
-## Building
+With ADB connected to your TV, check which APK it needs, then install it:
 
-Requirements:
+```sh
+adb shell getprop ro.product.cpu.abilist
+adb install -r Mirage-1.1.16-armeabi-v7a-compact.apk
+```
 
-- JDK 17
-- Android SDK 36
-- NDK `27.0.12077973`
-- CMake `3.31.6`
-- Gradle `8.14.5` (installed separately; wrapper scripts are not included)
+If `arm64-v8a` is listed, use the 64-bit APK. Otherwise use the 32-bit one.
 
-The AirPlay engine pulls UxPlay, libplist, the OpenSSL build helper, FFmpeg and
-Oboe as pinned git submodules:
+Open Mirage from the TV's app list and follow its setup, or choose it in Android's default Home settings. Your previous launcher stays installed, so you can switch back. To update, install the new APK over the old one: your settings and pairings are kept.
+
+## Build from source
 
 ```sh
 git clone --recursive https://github.com/HiteshRohira/Mirage.git
 cd Mirage/glasslauncher
-gradle --no-daemon :app:assembleRelease :app:testReleaseUnitTest :app:lintRelease
+gradle --no-daemon :app:assembleRelease
 ```
 
-For an existing clone, initialize dependencies with
-`git submodule update --init --recursive`. The first build compiles OpenSSL and
-FFmpeg and Oboe for the selected ABIs. The size-focused build produces standalone APKs
-for both ARM ABIs by default; `-PtargetAbis=armeabi-v7a` or
-`-PtargetAbis=arm64-v8a` builds only that ABI. Its release APKs are under
-`glasslauncher/.build/compact/app/outputs/apk/release/` with the default
-native profile. Use fresh native build state when comparing variants.
-
-To select a standalone APK for a TV, check its supported ABIs over ADB:
-
-```sh
-adb shell getprop ro.product.cpu.abilist
-```
-
-Use an `arm64-v8a` APK if that ABI is listed, or an `armeabi-v7a` APK if
-that is supported. The device ABI list is authoritative; the CPU's advertised
-bitness alone does not establish the installed Android userspace's support.
-The size-focused build produces separate ABI APKs; select a matching one.
-
-APK installation requires a signature. For a first installation, create and
-secure your own Android signing keystore, then sign your APK with `apksigner`
-using your key and alias. Never commit the keystore or its passwords. For an
-update to an existing package, use the **same signing certificate** as that
-installation; a different key cannot update it. JVM tests and lint do not execute
-device tests.
-Native profiles have separate outputs: `baseline` keeps the previous native
-settings, `exports` localizes internal receiver symbols, and `crypto-size`
-also builds OpenSSL with `-Os`. The default `compact` profile links OpenSSL
-3.5 LTS, Oboe and the C++ runtime into one receiver library with packed Android
-relocations and dead-code removal. It keeps all existing AirPlay crypto and media
-fallbacks; the new, unused OpenSSL 3.5 post-quantum algorithms are not built. Select with `-PnativeProfile=PROFILE`; `-PuniversalApk=true` adds a
-universal APK. `-PtvAbiOnly` remains an ARMv7-only alias.
-
-For checked local signing of **both ABI APKs**, from the repository root:
-
-```sh
-python3 scripts/build-sideload.py --gradle /path/to/gradle --sdk /path/to/android-sdk \
-  --keystore /private/path/mirage.jks --key-alias mirage \
-  --password-file /private/path/password.txt \
-  --certificate-sha256 YOUR_VERIFIED_CERTIFICATE_SHA256 --output dist/signed
-```
-
-Obtain the lowercase SHA-256 certificate digest from your keystore using
-`keytool -list -v -keystore /private/path/mirage.jks -alias mirage` (remove the
-colons). For an update, `--baseline-apk /path/to/installed-signed.apk` can replace
-`--certificate-sha256`. The helper verifies the expected package, version,
-complete native payload, certificate and alignment, and refuses a nonempty output
-directory. It builds both ABIs even if you will install only one. The legacy
-local key-directory defaults are optional; other users supply their own key.
-
-## Installing on a TV
-
-Requires Android 8/API 26 or newer with a supported ARM ABI. Connect ADB to the
-intended TV, choose its serial explicitly when more than one device is connected,
-and inspect its API level and ABI list:
-
-```sh
-adb -s TV_SERIAL shell getprop ro.build.version.sdk
-adb -s TV_SERIAL shell getprop ro.product.cpu.abilist
-adb -s TV_SERIAL install -r /path/to/Mirage-MATCHING_ABI.apk
-```
-
-Each ABI APK is standalone; install only the matching file. Test launch, remote
-navigation and media before changing Home. Open Mirage from the TV's app list
-and follow its launcher setup, or select it in Android's default Home settings.
-An agent can verify the registered Home component with
-`adb -s TV_SERIAL shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME`.
-Keep the previous launcher available until the new setup works; disabling system
-packages is device-specific and is not required for a normal installation.
-Phone controls need device-local ADB authorization. Bluetooth permissions,
-boot-start restrictions and AirPlay playback must be checked on the actual TV.
-
-The phone remote maintains a local ADB connection after Android authorization;
-see [`glasslauncher/PHONE-REMOTE.md`](glasslauncher/PHONE-REMOTE.md).
-
-## Project layout
-
-- `glasslauncher/app` — the launcher: Home, All apps, Control Center, Bluetooth, the phone remote server and its web app.
-- `glasslauncher/airplay` — the AirPlay engine and player:
-  - native UxPlay core, with patches in `src/main/cpp/patches`;
-  - Kotlin service and renderers;
-  - the full-screen AirPlay player.
+You'll need JDK 17, Android SDK 36, NDK `27.0.12077973`, CMake `3.31.6` and Gradle `8.14.5`. See [Building Mirage](docs/BUILDING.md) for signing, build options and the project layout.
 
 ## Licensing
 
@@ -174,12 +76,4 @@ see [`glasslauncher/PHONE-REMOTE.md`](glasslauncher/PHONE-REMOTE.md).
 - The AirPlay module (`glasslauncher/airplay`) is adapted from [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server) and builds on [UxPlay](https://github.com/FDH2/UxPlay). It is under the **GPL-3.0** ([glasslauncher/airplay/LICENSE](glasslauncher/airplay/LICENSE)).
 - Third-party components keep their own licenses.
 
-Mirage is built on [Glass Launcher](https://github.com/namillis/GlassLauncherTV), and signed APKs are published for non-commercial use. It isn't affiliated with or endorsed by Apple, Google, TCL or Xiaomi. AirPlay is a trademark of Apple Inc.
-
-The application ID is `tv.mirage.launcher`. An installation using the earlier
-ID is a separate app: Android does not move its private data automatically.
-Export settings from the old app and restore supported settings and custom icons
-in Mirage; wallpaper, phone pairings, local ADB authorization keys and other
-private state are not covered by that backup. Re-pair and authorize as needed.
-The two receivers can compete for network ports; stop the old receiver before
-starting the new one, and keep the old app and data until migration is verified.
+Mirage is built on [Glass Launcher](https://github.com/namillis/GlassLauncherTV). It isn't affiliated with or endorsed by Apple, Google, TCL or Xiaomi. AirPlay is a trademark of Apple Inc.
