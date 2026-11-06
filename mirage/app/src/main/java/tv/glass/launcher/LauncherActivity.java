@@ -2961,7 +2961,7 @@ public class LauncherActivity extends Activity {
 
         ambientBackground = new AmbientBackgroundView(this);
         ambientBackground.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-        // A chosen wallpaper stays available through Glass's existing picker.
+        // A chosen wallpaper stays available through Mirage's existing picker.
         ambientBackground.setVisibility(ambientBackgroundEnabled ? View.VISIBLE : View.GONE);
         applyAmbientWindow();
         root.addView(ambientBackground, new FrameLayout.LayoutParams(MATCH, MATCH));

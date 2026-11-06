@@ -35,7 +35,7 @@ import dadb.AdbShellStream;
  *  </ol> */
 final class TvRemoteClient implements AutoCloseable {
     private static final String TAG = "GlassRemote";
-    /** Prior keyboard, written before Glass's IME is selected and removed once
+    /** Prior keyboard, written before Mirage's IME is selected and removed once
      *  restored, so a crash mid-send can be repaired on the next connection. */
     private static final String IME_JOURNAL = "phone-remote-ime-restore";
     private static final long INJECTOR_START_MS = 5_000;
@@ -214,9 +214,9 @@ final class TvRemoteClient implements AutoCloseable {
         }
     }
 
-    /** If Glass died between selecting its keyboard and restoring the user's,
+    /** If Mirage died between selecting its keyboard and restoring the user's,
      *  the TV is left with an invisible keyboard. Repair that, but only while
-     *  Glass's keyboard is still the selected one: a later choice by the user
+     *  Mirage's keyboard is still the selected one: a later choice by the user
      *  always wins. */
     private void recoverKeyboard(){
         File journal=new File(context.getNoBackupFilesDir(),IME_JOURNAL);

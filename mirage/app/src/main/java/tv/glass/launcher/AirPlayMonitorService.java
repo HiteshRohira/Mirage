@@ -36,11 +36,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 /**
- * Background host for Glass's always-on services, running in the small
+ * Background host for Mirage's always-on services, running in the small
  * {@code :airplay} process: the built-in AirPlay receiver
  * ({@link AirPlayService}) and the phone remote.
  *
- * <p>The receiver is part of Glass, so health is read directly from the
+ * <p>The receiver is part of Mirage, so health is read directly from the
  * engine — server running and every mDNS record registered — instead of
  * probing the network for another app's advertisement. The engine re-registers
  * itself when the network changes; this service repairs anything else

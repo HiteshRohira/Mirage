@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-/** Starts Glass's background host (built-in AirPlay receiver and phone
- *  remote) after boot and after Glass updates, before Home is first shown. */
+/** Starts Mirage's background host (built-in AirPlay receiver and phone
+ *  remote) after boot and after Mirage updates, before Home is first shown. */
 public final class AirPlayBootReceiver extends BroadcastReceiver {
     @Override public void onReceive(Context ctx, Intent intent) {
         String a = intent.getAction();

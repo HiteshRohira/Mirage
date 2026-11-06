@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
  * <p>Protocol on stdin/stdout, one line each way, nothing else: {@code k CODE}
  * (press), {@code l CODE} (long press), {@code q} (quit). Replies are
  * {@code ok} or {@code err}. Only the remote's fixed key codes are accepted.
- * It opens no socket and exits when its stdin closes (Glass or ADB went away).
+ * It opens no socket and exits when its stdin closes (Mirage or ADB went away).
  */
 public final class KeyInjector {
     static final String VERSION = "1";
